@@ -1,56 +1,62 @@
-// Unknown 타입
+let num1: number = 10;
+let num2: 10 = 10;
 
-function UnknownExam() {
-  let a: unknown = 1; // number -> unknown
-  let b: unknown = "hello"; // string -> unknown
-  let c: unknown = true; // boolean -> unknown
-  let d: unknown = null; // null -> unknown
-  let e: unknown = undefined; // undefined -> unknown
-  let f: unknown = []; // Array -> unknown
-  let g: unknown = {}; // Object -> unknown
-  let h: unknown = () => {}; // Function -> unknown
+num1 = num2;
+//num2 = num1;
 
-  let unknownValue: unknown;
+/**
+ * 객체 타입간의 호환성
+ * -> 어떤 객체타입을 다른 객체타입으로 취급해도 괜찮은가?
+ */
+type Animal = {
+  name: string;
+  color: string;
+};
 
-  // let a: number = unknownValue;
-}
+type Dog = {
+  name: string;
+  color: string;
+  breed: string;
+};
 
-// Never 타입
+let animal: Animal = {
+  name: "기린",
+  color: "yellow",
+};
 
-function NeverExam() {
-  function neverFunc(): never {
-    while (true) {}
-  }
+let dog: Dog = {
+  name: "돌돌이",
+  color: "brown",
+  breed: "진도",
+};
 
-  let num: number = neverFunc();
-  let str: string = neverFunc();
-  let bool: boolean = neverFunc();
+animal = dog; // ✅ OK
+//dog = animal; // ❌ NO
 
-  //let never1: never = 10;
-  //let never2: never = "string";
-  //let never3: never = true;
-}
+type Book = {
+  name: string;
+  price: number;
+};
 
-// Void 타입
+type ProgrammingBook = {
+  name: string;
+  price: number;
+  skill: string;
+};
 
-function voidExam() {
-  function voidFunc(): void {
-    console.log("hi");
-  }
+let book: Book;
+let programmingBook: ProgrammingBook = {
+  name: "한 입 크기로 잘라먹는 리액트",
+  price: 33000,
+  skill: "reactjs",
+};
 
-  let voidVar: void = undefined;
-}
+book = programmingBook; // ✅ OK
+//programmingBook = book; // ❌ NO
 
-// Any 타입
-
-function anyExam() {
-  let unknownVar: unknown;
-  let anyVar: any;
-  let undefinedVar: undefined;
-  let neverVar: never;
-
-  anyVar = unknownVar;
-  undefinedVar = anyVar;
-
-  //neverVar = anyVar;  // never -> any ❌
-}
+let book2: Book = {
+  // 오류 발생
+  name: "한 입 크기로 잘라먹는 리액트",
+  price: 33000,
+  //skill: "reactjs", // ❌ NO
+};
