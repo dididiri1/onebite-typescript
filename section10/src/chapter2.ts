@@ -63,6 +63,7 @@ type Record<K extends keyof any, V> = {
   [key in K]: V;
 };
 
+//
 type Thumbnail = Record<
   "large" | "medium" | "smail" | "watch",
   { url: string; size: number }
