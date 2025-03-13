@@ -1,8 +1,15 @@
-import { useState, useRef, useEffect, useReducer } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useReducer,
+  useContext,
+} from "react";
 import "./App.css";
 import Editor from "./components/Editor";
-import { Todo } from "./types";
 import TodoItem from "./components/TodoItem";
+import { Todo } from "./types";
+import HookExam from "./components/HookExam";
 
 type Action =
   | {
@@ -19,12 +26,26 @@ type Action =
 
 function reducer(state: Todo[], action: Action) {
   switch (action.type) {
-    case "CREATE": {
+    case "CREATE":
       return [...state, action.data];
-    }
-    case "DELETE": {
-      return state.filter((it) => it.id !== action.id);
-    }
+    case "DELETE":
+      return state.filter((todo) => todo.id !== action.id);
+  }
+}
+
+export const TodoStateContext = React.createContext<Todo[] | null>(null);
+
+export const TodoDispatchContext = React.createContext<{
+  onClickAdd: (text: string) => void;
+  onClickDelete: (id: number) => void;
+} | null>(null);
+
+export function useTodoDispatch() {
+  const dispatch = useContext(TodoDispatchContext);
+  if (!dispatch) {
+    throw new Error("문제가 있다!");
+  } else {
+    return dispatch;
   }
 }
 
@@ -57,13 +78,23 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Todo</h1>
-      <Editor onClickAdd={onClickAdd}></Editor>
-      <div>
-        {todos.map((todo) => (
-          <TodoItem key={todo.id} {...todo} onClickDelete={onClickDelete} />
-        ))}
-      </div>
+      <TodoStateContext.Provider value={todos}>
+        <TodoDispatchContext.Provider
+          value={{
+            onClickAdd,
+            onClickDelete,
+          }}
+        >
+          <h1>Todo</h1>
+          <Editor></Editor>
+          <div>
+            {todos.map((todo) => (
+              <TodoItem key={todo.id} {...todo} />
+            ))}
+          </div>
+          <HookExam />
+        </TodoDispatchContext.Provider>
+      </TodoStateContext.Provider>
     </div>
   );
 }
