@@ -4,12 +4,12 @@ import React, {
   useEffect,
   useReducer,
   useContext,
+  ChangeEvent,
 } from "react";
 import "./App.css";
 import Editor from "./components/Editor";
 import TodoItem from "./components/TodoItem";
 import { Todo } from "./types";
-import HookExam from "./components/HookExam";
 
 type Action =
   | {
@@ -29,7 +29,7 @@ function reducer(state: Todo[], action: Action) {
     case "CREATE":
       return [...state, action.data];
     case "DELETE":
-      return state.filter((todo) => todo.id !== action.id);
+      return state.filter((it) => it.id !== action.id);
   }
 }
 
@@ -40,19 +40,8 @@ export const TodoDispatchContext = React.createContext<{
   onClickDelete: (id: number) => void;
 } | null>(null);
 
-export function useTodoDispatch() {
-  const dispatch = useContext(TodoDispatchContext);
-  if (!dispatch) {
-    throw new Error("문제가 있다!");
-  } else {
-    return dispatch;
-  }
-}
-
 function App() {
-  //const [todos, setTodos] = useState<Todo[]>([]);
   const [todos, dispatch] = useReducer(reducer, []);
-
   const idRef = useRef(0);
 
   const onClickAdd = (text: string) => {
@@ -79,20 +68,14 @@ function App() {
   return (
     <div className="App">
       <TodoStateContext.Provider value={todos}>
-        <TodoDispatchContext.Provider
-          value={{
-            onClickAdd,
-            onClickDelete,
-          }}
-        >
+        <TodoDispatchContext.Provider value={{ onClickAdd, onClickDelete }}>
           <h1>Todo</h1>
-          <Editor></Editor>
+          <Editor />
           <div>
-            {todos.map((todo) => (
-              <TodoItem key={todo.id} {...todo} />
-            ))}
+            {todos.map((todo) => {
+              return <TodoItem key={todo.id} {...todo} />;
+            })}
           </div>
-          <HookExam />
         </TodoDispatchContext.Provider>
       </TodoStateContext.Provider>
     </div>

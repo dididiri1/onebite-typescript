@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export function useInput(): [
   string,
+  React.Dispatch<React.SetStateAction<string>>,
   (e: React.ChangeEvent<HTMLInputElement>) => void
 ] {
   const [input, setInput] = useState("");
@@ -10,5 +11,5 @@ export function useInput(): [
     setInput(e.target.value);
   };
 
-  return [input, onChangeInput];
+  return [input, setInput, onChangeInput];
 }
