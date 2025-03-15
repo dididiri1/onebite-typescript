@@ -16,5 +16,7 @@ export function getEmotionImage(emotionId: number) {
       return emotion4;
     case 5:
       return emotion5;
+    default:
+      return "";
   }
 }

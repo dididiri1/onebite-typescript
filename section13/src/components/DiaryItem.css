@@ -1,0 +1,13 @@
+.DiaryItem {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+
+  padding: 15px 0px;
+  border-bottom: solid 1px rgb(236, 236, 236);
+}
+
+.DiaryItem .img_section {
+  min-width: 120px;
+  height: 80px;
+}
