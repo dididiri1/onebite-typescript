@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Home from "./page/Home";
 import Diary from "./page/Diary";
@@ -6,16 +6,16 @@ import New from "./page/New";
 import Edit from "./page/Edit";
 import Button from "./components/Button";
 import Header from "./components/Header";
-import { useEffect, useReducer, useRef } from "react";
+import React, { useEffect, useReducer, useRef, useContext } from "react";
 
-interface Diary {
+interface DiaryEntry {
   id: number;
   emotionId: number;
   content: string;
   createDate: number;
 }
 
-const mockData: Diary[] = [
+const mockData: DiaryEntry[] = [
   {
     id: 1,
     createDate: new Date("2025-03-01").getTime(),
@@ -53,20 +53,38 @@ type Action =
         content: string;
         createDate: number;
       };
+    }
+  | {
+      type: "DELETE";
+      id: number;
     };
 
-function reducer(state: Diary[], action: Action) {
+function reducer(state: DiaryEntry[], action: Action) {
   switch (action.type) {
     case "CREATE":
       return [...state, action.data];
     case "UPDATE":
-      return state.filter((item) =>
+      return state.map((item) =>
         String(item.id) === String(action.data.id) ? action.data : item
       );
+    case "DELETE":
+      return state.filter((item) => String(item.id) !== String(action.id));
     default:
       return state;
   }
 }
+
+export const DiaryStateContext = React.createContext<DiaryEntry[] | null>(null);
+export const DiaryDispatchContext = React.createContext<{
+  onCreate: (createDate: number, emotionId: number, content: string) => void;
+  onUpdate: (
+    id: number,
+    createDate: number,
+    emotionId: number,
+    content: string
+  ) => void;
+  onDelete: (id: number) => void;
+} | null>(null);
 
 function App() {
   const [data, dispatch] = useReducer(reducer, mockData);
@@ -105,6 +123,12 @@ function App() {
   };
 
   // 기존 일기 삭제
+  const onDelete = (id: number) => {
+    dispatch({
+      type: "DELETE",
+      id: id,
+    });
+  };
 
   useEffect(() => {
     console.log(data);
@@ -134,16 +158,29 @@ function App() {
         일기 수정
       </button>
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/new" element={<New />} />
-        <Route path="/diary/:id" element={<Diary />} />
-        <Route path="/edit/:id" element={<Edit />} />
-      </Routes>
-
-      <div>
-        <img />
-      </div>
+      <button
+        onClick={() => {
+          onDelete(1);
+        }}
+      >
+        일기 삭제
+      </button>
+      <DiaryStateContext.Provider value={data}>
+        <DiaryDispatchContext.Provider
+          value={{
+            onCreate,
+            onUpdate,
+            onDelete,
+          }}
+        >
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/new" element={<New />} />
+            <Route path="/diary/:id" element={<Diary />} />
+            <Route path="/edit/:id" element={<Edit />} />
+          </Routes>
+        </DiaryDispatchContext.Provider>
+      </DiaryStateContext.Provider>
     </div>
   );
 }
