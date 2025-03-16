@@ -18,7 +18,9 @@ const DiaryList = (props: DiaryListProps) => {
         <Button text={"새 일기 쓰기"} type={"POSITIVE"} />
       </div>
       <div className="list_wrapper">
-        <DiaryItem />
+        {props.diaries.map((item) => (
+          <DiaryItem key={item.id} {...item} />
+        ))}
       </div>
     </div>
   );
