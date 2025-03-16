@@ -4,16 +4,8 @@ import Home from "./page/Home";
 import Diary from "./page/Diary";
 import New from "./page/New";
 import Edit from "./page/Edit";
-import Button from "./components/Button";
-import Header from "./components/Header";
-import React, { useEffect, useReducer, useRef, useContext } from "react";
-
-interface DiaryEntry {
-  id: number;
-  emotionId: number;
-  content: string;
-  createDate: number;
-}
+import React, { useEffect, useReducer, useRef } from "react";
+import { DiaryEntry } from "./types";
 
 const mockData: DiaryEntry[] = [
   {
@@ -30,7 +22,7 @@ const mockData: DiaryEntry[] = [
   },
   {
     id: 3,
-    createDate: new Date("2025-03-02").getTime(),
+    createDate: new Date("2025-02-02").getTime(),
     emotionId: 3,
     content: "3번 일기 내용",
   },

@@ -1,8 +1,13 @@
+import { DiaryEntry } from "../types";
 import Button from "./Button";
 import DiaryItem from "./DiaryItem";
 import "./DiaryList.css";
 
-const DiaryList = () => {
+interface DiaryListProps {
+  diaries: DiaryEntry[];
+}
+
+const DiaryList = (props: DiaryListProps) => {
   return (
     <div className="DiaryList">
       <div className="menu_bar">

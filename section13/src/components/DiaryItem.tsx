@@ -3,9 +3,11 @@ import Button from "./Button";
 import "./DiaryItem.css";
 
 const DiaryItem = () => {
+  const emotionId = 1;
+
   return (
     <div className="DiaryItem">
-      <div className="img_section">
+      <div className={`img_section img_section_${emotionId}`}>
         <img src={getEmotionImage(1)} alt="" />
       </div>
       <div className="info_section">
