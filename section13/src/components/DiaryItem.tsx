@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 interface Props extends DiaryEntry {}
 
-const DiaryItem = ({ id, emotionId, createDate, content }: Props) => {
+const DiaryItem = ({ id, emotionId, createdDate, content }: Props) => {
   const nav = useNavigate();
   return (
     <div className="DiaryItem">
@@ -18,7 +18,7 @@ const DiaryItem = ({ id, emotionId, createDate, content }: Props) => {
       </div>
       <div onClick={() => nav(`/diary/${id}`)} className="info_section">
         <div className="created_date">
-          {new Date(createDate).toLocaleDateString()}
+          {new Date(createdDate).toLocaleDateString()}
         </div>
         <div className="content">{content}</div>
       </div>

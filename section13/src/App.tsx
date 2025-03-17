@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import Home from "./page/Home";
 import Diary from "./page/Diary";
@@ -10,19 +10,19 @@ import { DiaryEntry } from "./types";
 const mockData: DiaryEntry[] = [
   {
     id: 1,
-    createDate: new Date("2025-03-01").getTime(),
+    createdDate: new Date("2025-03-01").getTime(),
     emotionId: 1,
     content: "1번 일기 내용",
   },
   {
     id: 2,
-    createDate: new Date("2025-03-01").getTime(),
+    createdDate: new Date("2025-03-03").getTime(),
     emotionId: 2,
     content: "2번 일기 내용",
   },
   {
     id: 3,
-    createDate: new Date("2025-02-02").getTime(),
+    createdDate: new Date("2025-02-02").getTime(),
     emotionId: 3,
     content: "3번 일기 내용",
   },
@@ -34,7 +34,7 @@ type Action =
         id: number;
         emotionId: number;
         content: string;
-        createDate: number;
+        createdDate: number;
       };
     }
   | {
@@ -43,7 +43,7 @@ type Action =
         id: number;
         emotionId: number;
         content: string;
-        createDate: number;
+        createdDate: number;
       };
     }
   | {
@@ -68,10 +68,10 @@ function reducer(state: DiaryEntry[], action: Action) {
 
 export const DiaryStateContext = React.createContext<DiaryEntry[] | null>(null);
 export const DiaryDispatchContext = React.createContext<{
-  onCreate: (createDate: number, emotionId: number, content: string) => void;
+  onCreate: (createdDate: number, emotionId: number, content: string) => void;
   onUpdate: (
     id: number,
-    createDate: number,
+    createdDate: number,
     emotionId: number,
     content: string
   ) => void;
@@ -84,12 +84,16 @@ function App() {
   const idRef = useRef(3);
 
   // 새로운 일기 추가
-  const onCreate = (createDate: number, emotionId: number, content: string) => {
+  const onCreate = (
+    createdDate: number,
+    emotionId: number,
+    content: string
+  ) => {
     dispatch({
       type: "CREATE",
       data: {
         id: idRef.current++,
-        createDate,
+        createdDate,
         emotionId,
         content,
       },
@@ -99,7 +103,7 @@ function App() {
   // 기존 일기 수정
   const onUpdate = (
     id: number,
-    createDate: number,
+    createdDate: number,
     emotionId: number,
     content: string
   ) => {
@@ -107,7 +111,7 @@ function App() {
       type: "UPDATE",
       data: {
         id,
-        createDate,
+        createdDate,
         emotionId,
         content,
       },
