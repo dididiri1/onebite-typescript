@@ -2,8 +2,8 @@ import "./Header.css";
 
 type Props = {
   title: string;
-  leftChild: React.ReactNode;
-  rightChild: React.ReactNode;
+  leftChild?: React.ReactNode;
+  rightChild?: React.ReactNode;
 };
 
 const Header = ({ title, leftChild, rightChild }: Props) => {
