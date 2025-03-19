@@ -2,5 +2,5 @@ export interface DiaryEntry {
   id: number;
   emotionId: number;
   content: string;
-  createdDate: number;
+  createdDate: Date;
 }
