@@ -37,3 +37,14 @@ textarea {
   resize: vertical;
   box-sizing: border-box;
 }
+
+.Editor .emotion_section .emotion_list_wrapper {
+  display: flex;
+  justify-content: space-around;
+  gap: 2%;
+}
+
+.Editor .button_section {
+  display: flex;
+  justify-content: space-around;
+}

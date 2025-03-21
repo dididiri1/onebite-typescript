@@ -1,12 +1,9 @@
 import { useState } from "react";
 import "./Editor.css";
 import EmotionItem from "./EmotionItem";
-
-interface DiaryEntry {
-  createdDate: Date;
-  emotionId: number;
-  content: string;
-}
+import { noIdDiary } from "../types";
+import Button from "./Button";
+import { useNavigate } from "react-router-dom";
 
 const emotionList = [
   { emotionId: 1, emotionName: "완전 좋음" },
@@ -16,29 +13,40 @@ const emotionList = [
   { emotionId: 5, emotionName: "끔찍함" },
 ];
 
-const Editor = () => {
-  const [input, setInput] = useState<DiaryEntry>({
-    createdDate: new Date(),
+interface Props {
+  onSubmit: (input: noIdDiary) => void;
+}
+
+const Editor = ({ onSubmit }: Props) => {
+  const nav = useNavigate();
+
+  const [input, setInput] = useState<noIdDiary>({
+    createdDate: new Date().getTime(),
     emotionId: 3,
     content: "",
   });
 
-  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeInput = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     let name = e.target.name;
     let value = e.target.value;
 
     setInput((input) => ({
       ...input,
-      [name]: name === "createdDate" ? new Date(value) : value,
+      [name]: name === "createdDate" ? new Date(value).getTime() : value,
     }));
   };
 
-  const getStringedDate = (targetDate: Date): string => {
-    const year = String(targetDate.getFullYear());
-    let month = String(targetDate.getMonth() + 1).padStart(2, "0");
-    let date = String(targetDate.getDate()).padStart(2, "0");
+  const getStringedDate = (createdDate: number): string => {
+    //const targetDate = new Date(createdDate);
+    //let year = String(targetDate.getFullYear());
+    //let month = String(targetDate.getMonth() + 1).padStart(2, "0");
+    //let date = String(targetDate.getDate()).padStart(2, "0");
 
-    return `${year}-${month}-${date}`;
+    //return `${year}-${month}-${date}`;
+
+    return new Date(createdDate).toISOString().split("T")[0];
   };
 
   const handleEmotionClick = (emotionId: number) => {
@@ -46,6 +54,10 @@ const Editor = () => {
       ...prev,
       emotionId,
     }));
+  };
+
+  const onClickSubmitButton = () => {
+    onSubmit(input);
   };
 
   return (
@@ -74,9 +86,20 @@ const Editor = () => {
       </section>
       <section className="content_section">
         <h4>오늘의 일기</h4>
-        <textarea placeholder="오늘은 어땟나요?" />
+        <textarea
+          name="content"
+          onChange={onChangeInput}
+          placeholder="오늘은 어땟나요?"
+        />
       </section>
-      <section className="button_section"></section>
+      <section className="button_section">
+        <Button onClick={() => nav(-1)} text={"취소하기"} />
+        <Button
+          onClick={onClickSubmitButton}
+          text={"작성완료"}
+          type={"POSITIVE"}
+        />
+      </section>
     </div>
   );
 };

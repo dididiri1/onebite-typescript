@@ -1,13 +1,13 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Home from "./page/Home";
-import Diary from "./page/Diary";
+import Detail from "./page/Detail";
 import New from "./page/New";
 import Edit from "./page/Edit";
-import React, { useEffect, useReducer, useRef } from "react";
-import { DiaryEntry } from "./types";
+import React, { useContext, useEffect, useReducer, useRef } from "react";
+import { Diary } from "./types";
 
-const mockData: DiaryEntry[] = [
+const mockData: Diary[] = [
   {
     id: 1,
     createdDate: new Date("2025-03-01").getTime(),
@@ -51,22 +51,22 @@ type Action =
       id: number;
     };
 
-function reducer(state: DiaryEntry[], action: Action) {
+function reducer(state: Diary[], action: Action) {
   switch (action.type) {
     case "CREATE":
       return [...state, action.data];
     case "UPDATE":
       return state.map((item) =>
-        String(item.id) === String(action.data.id) ? action.data : item
+        item.id === action.data.id ? action.data : item
       );
     case "DELETE":
-      return state.filter((item) => String(item.id) !== String(action.id));
+      return state.filter((item) => item.id !== action.id);
     default:
       return state;
   }
 }
 
-export const DiaryStateContext = React.createContext<DiaryEntry[] | null>(null);
+export const DiaryStateContext = React.createContext<Diary[] | null>(null);
 export const DiaryDispatchContext = React.createContext<{
   onCreate: (createdDate: number, emotionId: number, content: string) => void;
   onUpdate: (
@@ -77,6 +77,12 @@ export const DiaryDispatchContext = React.createContext<{
   ) => void;
   onDelete: (id: number) => void;
 } | null>(null);
+
+export function useDiaryDispatch() {
+  const dispatch = useContext(DiaryDispatchContext);
+  if (!dispatch) throw new Error("DiaryDispatchContext에 문제가 있다.");
+  return dispatch;
+}
 
 function App() {
   const [data, dispatch] = useReducer(reducer, mockData);
@@ -143,7 +149,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/new" element={<New />} />
-            <Route path="/diary/:id" element={<Diary />} />
+            <Route path="/diary/:id" element={<Detail />} />
             <Route path="/edit/:id" element={<Edit />} />
           </Routes>
         </DiaryDispatchContext.Provider>
