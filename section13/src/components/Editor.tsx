@@ -1,5 +1,12 @@
+import { useState } from "react";
 import "./Editor.css";
 import EmotionItem from "./EmotionItem";
+
+interface DiaryEntry {
+  createdDate: Date;
+  emotionId: number;
+  content: string;
+}
 
 const emotionList = [
   { emotionId: 1, emotionName: "완전 좋음" },
@@ -10,28 +17,57 @@ const emotionList = [
 ];
 
 const Editor = () => {
-const [input, setInput] = useState({
+  const [input, setInput] = useState<DiaryEntry>({
     createdDate: new Date(),
     emotionId: 3,
     content: "",
   });
 
-  const emotionId = 1;
+  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let name = e.target.name;
+    let value = e.target.value;
+
+    setInput((input) => ({
+      ...input,
+      [name]: name === "createdDate" ? new Date(value) : value,
+    }));
+  };
+
+  const getStringedDate = (targetDate: Date): string => {
+    const year = String(targetDate.getFullYear());
+    let month = String(targetDate.getMonth() + 1).padStart(2, "0");
+    let date = String(targetDate.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${date}`;
+  };
+
+  const handleEmotionClick = (emotionId: number) => {
+    setInput((prev) => ({
+      ...prev,
+      emotionId,
+    }));
+  };
 
   return (
     <div className="Editor">
       <section className="date_section">
         <h4>오늘의 날짜</h4>
-        <input type="date" />
+        <input
+          type="date"
+          name="createdDate"
+          value={getStringedDate(input.createdDate)}
+          onChange={onChangeInput}
+        />
       </section>
       <section className="img_section">
         <h4>오늘의 감정</h4>
         <div className="emotion_list_wrapper">
           {emotionList.map((item) => (
             <EmotionItem
+              onClick={() => handleEmotionClick(item.emotionId)}
               key={item.emotionId}
               {...item}
-              isSelected={emotionId === item.emotionId}
+              isSelected={item.emotionId === input.emotionId}
             />
           ))}
         </div>

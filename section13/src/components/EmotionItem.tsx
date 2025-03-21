@@ -5,11 +5,18 @@ interface Props {
   emotionId: number;
   emotionName: string;
   isSelected: boolean;
+  onClick: () => void;
 }
 
-const EmotionItem = ({ emotionId, emotionName, isSelected }: Props) => {
+const EmotionItem = ({
+  emotionId,
+  emotionName,
+  isSelected,
+  onClick,
+}: Props) => {
   return (
     <div
+      onClick={onClick}
       className={`EmotionItem ${
         isSelected ? `EmotionItem_on_${emotionId}` : ""
       }`}
