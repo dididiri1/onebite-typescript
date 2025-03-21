@@ -10,6 +10,12 @@ const emotionList = [
 ];
 
 const Editor = () => {
+const [input, setInput] = useState({
+    createdDate: new Date(),
+    emotionId: 3,
+    content: "",
+  });
+
   const emotionId = 1;
 
   return (
