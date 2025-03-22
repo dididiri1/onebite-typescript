@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Editor.css";
 import EmotionItem from "./EmotionItem";
-import { noIdDiary } from "../types";
+import { Diary, noIdDiary } from "../types";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
 
@@ -15,9 +15,10 @@ const emotionList = [
 
 interface Props {
   onSubmit: (input: noIdDiary) => void;
+  initData?: Diary;
 }
 
-const Editor = ({ onSubmit }: Props) => {
+const Editor = ({ initData, onSubmit }: Props) => {
   const nav = useNavigate();
 
   const [input, setInput] = useState<noIdDiary>({
@@ -25,6 +26,14 @@ const Editor = ({ onSubmit }: Props) => {
     emotionId: 3,
     content: "",
   });
+
+  useEffect(() => {
+    if (initData) {
+      setInput({
+        ...initData,
+      });
+    }
+  }, [initData]);
 
   const onChangeInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -88,6 +97,7 @@ const Editor = ({ onSubmit }: Props) => {
         <h4>오늘의 일기</h4>
         <textarea
           name="content"
+          value={input.content}
           onChange={onChangeInput}
           placeholder="오늘은 어땟나요?"
         />
