@@ -1,10 +1,10 @@
 import { getEmotionImage } from "../util/get-emotion-image";
 import Button from "./Button";
 import "./DiaryItem.css";
-import { DiaryEntry } from "../types";
+import { Diary } from "../types";
 import { useNavigate } from "react-router-dom";
 
-interface Props extends DiaryEntry {}
+interface Props extends Diary {}
 
 const DiaryItem = ({ id, emotionId, createdDate, content }: Props) => {
   const nav = useNavigate();
@@ -16,7 +16,7 @@ const DiaryItem = ({ id, emotionId, createdDate, content }: Props) => {
       >
         <img src={getEmotionImage(emotionId)} alt="" />
       </div>
-      <div onClick={() => nav(`/diary/${id}`)} className="info_section">
+      <div onClick={() => nav(`/detail/${id}`)} className="info_section">
         <div className="created_date">
           {new Date(createdDate).toLocaleDateString()}
         </div>

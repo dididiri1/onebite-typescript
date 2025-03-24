@@ -4,14 +4,7 @@ import EmotionItem from "./EmotionItem";
 import { Diary, noIdDiary } from "../types";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
-
-const emotionList = [
-  { emotionId: 1, emotionName: "완전 좋음" },
-  { emotionId: 2, emotionName: "좋음" },
-  { emotionId: 3, emotionName: "그러저럭" },
-  { emotionId: 4, emotionName: "나쁨" },
-  { emotionId: 5, emotionName: "끔찍함" },
-];
+import { emotionList } from "../util/constants";
 
 interface Props {
   onSubmit: (input: noIdDiary) => void;
