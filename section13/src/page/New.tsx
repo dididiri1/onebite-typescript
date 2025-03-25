@@ -4,9 +4,12 @@ import Header from "../components/Header";
 import Editor from "../components/Editor";
 import { useDiaryDispatch } from "../App";
 import { noIdDiary } from "../types";
+import usePageTitle from "../hooks/usePageTitle";
 
 const New = () => {
   const dispatch = useDiaryDispatch();
+
+  usePageTitle("새 일기 쓰기");
 
   const nav = useNavigate();
 

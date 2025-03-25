@@ -4,7 +4,13 @@ import Home from "./page/Home";
 import Detail from "./page/Detail";
 import New from "./page/New";
 import Edit from "./page/Edit";
-import React, { useContext, useEffect, useReducer, useRef } from "react";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+} from "react";
 import { Diary } from "./types";
 
 const mockData: Diary[] = [
@@ -27,7 +33,12 @@ const mockData: Diary[] = [
     content: "3번 일기 내용",
   },
 ];
+
 type Action =
+  | {
+      type: "INIT";
+      data: Diary[];
+    }
   | {
       type: "CREATE";
       data: {
@@ -52,18 +63,30 @@ type Action =
     };
 
 function reducer(state: Diary[], action: Action) {
+  let nextState;
+
   switch (action.type) {
+    case "INIT":
+      nextState = action.data;
+      break;
     case "CREATE":
-      return [...state, action.data];
+      nextState = [...state, action.data];
+      break;
     case "UPDATE":
-      return state.map((item) =>
+      nextState = state.map((item) =>
         item.id === action.data.id ? action.data : item
       );
+      break;
     case "DELETE":
-      return state.filter((item) => item.id !== action.id);
+      nextState = state.filter((item) => item.id !== action.id);
+      break;
     default:
       return state;
   }
+
+  localStorage.setItem("diary", JSON.stringify(nextState));
+
+  return nextState;
 }
 
 export const DiaryStateContext = React.createContext<Diary[] | null>(null);
@@ -85,9 +108,41 @@ export function useDiaryDispatch() {
 }
 
 function App() {
-  const [data, dispatch] = useReducer(reducer, mockData);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const idRef = useRef(3);
+  const [data, dispatch] = useReducer(reducer, []);
+
+  const idRef = useRef(0);
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("diary");
+    if (!storedData) {
+      setIsLoading(false);
+      return;
+    }
+
+    const parsedData = JSON.parse(storedData);
+
+    if (!Array.isArray(parsedData)) {
+      setIsLoading(false);
+      return;
+    }
+
+    let maxId = 0;
+    parsedData.forEach((item) => {
+      if (Number(item.id) > maxId) {
+        maxId = Number(item.id);
+      }
+    });
+
+    idRef.current = maxId + 1;
+
+    dispatch({
+      type: "INIT",
+      data: parsedData,
+    });
+    setIsLoading(false);
+  }, []);
 
   // 새로운 일기 추가
   const onCreate = (
@@ -132,9 +187,9 @@ function App() {
     });
   };
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  if (isLoading) {
+    return <div>데이터 로딩중입니다...</div>;
+  }
 
   return (
     <div className="App">
