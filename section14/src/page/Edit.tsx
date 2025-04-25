@@ -3,28 +3,17 @@ import Button from "../components/Button";
 import Header from "../components/Header";
 import Editor from "../components/Editor";
 import { useDiaryDispatch } from "../App";
-import { useEffect, useState } from "react";
-import { Diary, noIdDiary } from "../types";
-import { fetchDiary } from "../api/diaryApi";
+import useDiary from "../hooks/useDiary";
+import { noIdDiary } from "../types";
 
 const Edit = () => {
   const params = useParams();
   const { onUpdate, onDelete } = useDiaryDispatch();
   const nav = useNavigate();
 
-  const [curDiaryItem, setCurDiaryItem] = useState<Diary>();
+  const diaryId = params.id ? Number(params.id) : null;
 
-  useEffect(() => {
-    fetchDiary(Number(params.id))
-      .then((res) => {
-        console.log("res: " + JSON.stringify(res.data.data));
-        setCurDiaryItem(res.data.data);
-      })
-      .catch((err) => {
-        window.alert("존재하지 않는 일기입니다.");
-        nav("/");
-      });
-  }, [params.id]);
+  const curDiaryItem = useDiary(Number(diaryId));
 
   const onClickDelete = () => {
     if (window.confirm("일기를 정말 삭제할까요? 다시 복구되지 않아요!")) {
