@@ -86,7 +86,7 @@ function App() {
 
   useEffect(() => {
     const storedData = localStorage.getItem("diary");
-    console.log(storedData);
+    //console.log(storedData);
     if (!storedData) {
       setIsLoading(false);
       return;
