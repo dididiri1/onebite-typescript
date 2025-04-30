@@ -55,7 +55,7 @@ function reducer(state: Diary[], action: Action) {
       );
       break;
     case "DELETE":
-      nextState = state.filter((item) => item.id === action.id);
+      nextState = state.filter((item) => item.id !== action.id);
       break;
     default:
       return state;
