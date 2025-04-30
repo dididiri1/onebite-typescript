@@ -6,6 +6,12 @@ import Detail from "./page/Detail";
 import Edit from "./page/Edit";
 import React, { useState, useEffect, useReducer, useRef } from "react";
 import { Diary } from "./types";
+import {
+  createDiary,
+  deleteDiary,
+  fetchDiaries,
+  updateDiary,
+} from "./api/diaryApi";
 
 const mockData = [
   {
@@ -61,8 +67,6 @@ function reducer(state: Diary[], action: Action) {
       return state;
   }
 
-  localStorage.setItem("diary", JSON.stringify(nextState));
-
   return nextState;
 }
 
@@ -85,31 +89,17 @@ function App() {
   const idRef = useRef(3);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("diary");
-    //console.log(storedData);
-    if (!storedData) {
-      setIsLoading(false);
-      return;
-    }
-
-    const parsedData = JSON.parse(storedData);
-
-    if (!Array.isArray(parsedData)) {
-      setIsLoading(false);
-      return;
-    }
-
-    let maxId = 0;
-    parsedData.forEach((item) => {
-      if (maxId < Number(item.id)) {
-        maxId = Number(item.id);
-      }
-    });
-
-    idRef.current = maxId + 1;
-    dispatch({ type: "INIT", data: parsedData });
-
-    setIsLoading(false);
+    fetchDiaries()
+      .then((res) => {
+        const responseData = res.data.data;
+        dispatch({ type: "INIT", data: responseData });
+      })
+      .catch((err) => {
+        console.log("일기 목록 불러오기 실패:", err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   // 새로운 일기 추가
@@ -118,15 +108,14 @@ function App() {
     emotionId: number,
     content: string
   ) => {
-    dispatch({
-      type: "CREATE",
-      data: {
-        id: idRef.current++,
-        createdDate,
-        content,
-        emotionId,
-      },
-    });
+    createDiary({ createdDate, emotionId, content })
+      .then((res) => {
+        console.log(JSON.stringify(res.data.data));
+        dispatch({ type: "CREATE", data: res.data.data });
+      })
+      .catch((err) => {
+        console.error("일기 생성 실패:", err);
+      });
   };
 
   // 기존 일기 수정
@@ -136,19 +125,19 @@ function App() {
     emotionId: number,
     content: string
   ) => {
-    dispatch({
-      type: "UPDATE",
-      data: {
-        id,
-        createdDate,
-        emotionId,
-        content,
-      },
-    });
+    updateDiary(id, { createdDate, emotionId, content })
+      .then((res) => {
+        dispatch({ type: "UPDATE", data: res.data.data });
+      })
+      .catch((err) => {
+        console.error("일기 수정 실패:", err);
+      });
   };
   // 기존 일기 삭제
   const onDelete = (id: number) => {
-    dispatch({ type: "DELETE", id: id });
+    deleteDiary(id).then((res) => {
+      dispatch({ type: "DELETE", id });
+    });
   };
 
   if (isLoading) {

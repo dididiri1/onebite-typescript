@@ -6,13 +6,12 @@ import { DiaryStateContext } from "../App";
 import { Diary } from "../types";
 import { startOfMonth, endOfMonth, addMonths } from "date-fns";
 
-export const getMonthlyData = (pivotDate: Date, data: Diary[]) => {
-  const beginDate = startOfMonth(pivotDate).getTime();
-
-  const endDate = endOfMonth(pivotDate).getTime();
+export const getMothlyData = (pivotDate: Date, data: Diary[]) => {
+  let startDate = startOfMonth(pivotDate).getTime();
+  let endDate = endOfMonth(pivotDate).getTime();
 
   return data.filter(
-    (item) => beginDate <= item.createdDate && item.createdDate <= endDate
+    (item) => startDate <= item.createdDate && endDate >= item.createdDate
   );
 };
 
@@ -21,7 +20,7 @@ const Home = () => {
 
   const [pivotDate, setPivotDate] = useState(new Date());
 
-  const monthlyData = getMonthlyData(pivotDate, data);
+  const monthlyData = getMothlyData(pivotDate, data);
 
   const onDecreaseMonth = () => {
     setPivotDate((prev) => addMonths(prev, -1));

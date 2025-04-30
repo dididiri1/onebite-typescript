@@ -12,7 +12,7 @@ interface Props {
 const DiaryList = ({ diaries }: Props) => {
   const nav = useNavigate();
 
-  const [sortType, setSortType] = useState("");
+  const [sortType, setSortType] = useState("letest");
 
   const onChangeSortType = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortType(e.target.value);
@@ -21,7 +21,7 @@ const DiaryList = ({ diaries }: Props) => {
   const getSortedData = () => {
     return diaries.toSorted((a, b) => {
       if (sortType === "letest") {
-        return Number(a.createdDate) - Number(b.createdDate);
+        return Number(b.createdDate) - Number(a.createdDate);
       } else {
         return Number(a.createdDate) - Number(b.createdDate);
       }
