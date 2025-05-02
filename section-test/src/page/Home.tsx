@@ -1,17 +1,17 @@
-import Button from "../components/Button";
 import Header from "../components/Header";
-import DiaryList from "../components/DiaryList";
+import Button from "../components/Button";
 import { useContext, useState } from "react";
+import DiaryList from "../components/DiaryList";
 import { DiaryStateContext } from "../App";
-import { Diary } from "../types";
 import { startOfMonth, endOfMonth, addMonths } from "date-fns";
+import { Diary } from "../types";
 
-export const getMothlyData = (pivotDate: Date, data: Diary[]) => {
-  let startDate = startOfMonth(pivotDate).getTime();
+const getMonthlyData = (pivotDate: Date, data: Diary[]) => {
+  let beginDate = startOfMonth(pivotDate).getTime();
   let endDate = endOfMonth(pivotDate).getTime();
 
   return data.filter(
-    (item) => startDate <= item.createdDate && endDate >= item.createdDate
+    (item) => beginDate <= item.createdDate && item.createdDate <= endDate
   );
 };
 
@@ -19,8 +19,6 @@ const Home = () => {
   const data = useContext(DiaryStateContext) || [];
 
   const [pivotDate, setPivotDate] = useState(new Date());
-
-  const monthlyData = getMothlyData(pivotDate, data);
 
   const onDecreaseMonth = () => {
     setPivotDate((prev) => addMonths(prev, -1));
@@ -30,12 +28,14 @@ const Home = () => {
     setPivotDate((prev) => addMonths(prev, 1));
   };
 
+  const monthlyData = getMonthlyData(pivotDate, data);
+
   return (
     <div>
       <Header
         title={`${pivotDate.getFullYear()}년 ${pivotDate.getMonth() + 1}월`}
-        leftChild={<Button onClick={onDecreaseMonth} text={"<"} />}
-        rightChild={<Button onClick={onIncreaseMonth} text={">"} />}
+        leftChild={<Button text="<" onClick={onDecreaseMonth} />}
+        rightChild={<Button text=">" onClick={onIncreaseMonth} />}
       ></Header>
       <DiaryList diaries={monthlyData} />
     </div>

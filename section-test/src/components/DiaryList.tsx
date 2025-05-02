@@ -1,8 +1,8 @@
-import { useNavigate } from "react-router-dom";
-import Button from "./Button";
 import "./DiaryList.css";
-import DiaryItem from "./DiaryItem";
+import Button from "./Button";
+import { useNavigate } from "react-router-dom";
 import { Diary } from "../types";
+import DiaryItem from "./DiaryItem";
 import { useState } from "react";
 
 interface Props {
@@ -21,9 +21,9 @@ const DiaryList = ({ diaries }: Props) => {
   const getSortedData = () => {
     return diaries.toSorted((a, b) => {
       if (sortType === "letest") {
-        return Number(b.createdDate) - Number(a.createdDate);
-      } else {
         return Number(a.createdDate) - Number(b.createdDate);
+      } else {
+        return Number(b.createdDate) - Number(a.createdDate);
       }
     });
   };
@@ -34,21 +34,21 @@ const DiaryList = ({ diaries }: Props) => {
     <div className="DiaryList">
       <div className="menu_bar">
         <select onChange={onChangeSortType}>
-          <option value={"letest"}>최신순</option>
-          <option value={"oldest"}>오래된 순</option>
+          <option value="letest">최신순</option>
+          <option value="oldest">오래된순</option>
         </select>
         <Button
           text="새 일기 쓰기"
-          type="POSITIVE"
           onClick={() => {
             nav("/new");
           }}
-        ></Button>
+          type="POSITIVE"
+        />
       </div>
       <div className="list_wrapper">
-        {sortedData.map((item) => (
-          <DiaryItem key={item.id} {...item} />
-        ))}
+        {sortedData.map((item) => {
+          return <DiaryItem key={item.id} {...item} />;
+        })}
       </div>
     </div>
   );

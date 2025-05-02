@@ -1,30 +1,24 @@
-import "./App.css";
-import { Routes, Route, data } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./page/Home";
 import New from "./page/New";
-import Detail from "./page/Detail";
 import Edit from "./page/Edit";
-import React, { useState, useEffect, useReducer, useRef } from "react";
+import Detail from "./page/Detail";
+import "./App.css";
+import React, { useReducer, useRef } from "react";
 import { Diary } from "./types";
-import {
-  createDiary,
-  deleteDiary,
-  fetchDiaries,
-  updateDiary,
-} from "./api/diaryApi";
 
-const mockData = [
+const mockData: Diary[] = [
   {
     id: 1,
     emotionId: 1,
     content: "일기내용입니다. 1",
-    createdDate: new Date().getTime(),
+    createdDate: new Date("2025-05-02").getTime(),
   },
   {
     id: 2,
     emotionId: 3,
     content: "일기내용입니다. 2",
-    createdDate: new Date().getTime(),
+    createdDate: new Date("2025-05-01").getTime(),
   },
 ];
 
@@ -83,77 +77,54 @@ export const DiaryDispatchContext = React.createContext<{
 } | null>(null);
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-
   const [data, dispatch] = useReducer(reducer, mockData);
-  const idRef = useRef(3);
 
-  useEffect(() => {
-    fetchDiaries()
-      .then((res) => {
-        const responseData = res.data.data;
-        dispatch({ type: "INIT", data: responseData });
-      })
-      .catch((err) => {
-        console.log("일기 목록 불러오기 실패:", err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
+  const idRef = useRef(2);
 
-  // 새로운 일기 추가
+  // 일기 등록 기능
   const onCreate = (
     createdDate: number,
     emotionId: number,
     content: string
   ) => {
-    createDiary({ createdDate, emotionId, content })
-      .then((res) => {
-        console.log(JSON.stringify(res.data.data));
-        dispatch({ type: "CREATE", data: res.data.data });
-      })
-      .catch((err) => {
-        console.error("일기 생성 실패:", err);
-      });
+    dispatch({
+      type: "CREATE",
+      data: {
+        id: idRef.current++,
+        createdDate,
+        emotionId,
+        content,
+      },
+    });
   };
 
-  // 기존 일기 수정
+  // 일기 수정 기능
   const onUpdate = (
     id: number,
     createdDate: number,
     emotionId: number,
     content: string
   ) => {
-    updateDiary(id, { createdDate, emotionId, content })
-      .then((res) => {
-        dispatch({ type: "UPDATE", data: res.data.data });
-      })
-      .catch((err) => {
-        console.error("일기 수정 실패:", err);
-      });
-  };
-  // 기존 일기 삭제
-  const onDelete = (id: number) => {
-    deleteDiary(id).then((res) => {
-      dispatch({ type: "DELETE", id });
+    dispatch({
+      type: "UPDATE",
+      data: {
+        id,
+        createdDate,
+        emotionId,
+        content,
+      },
     });
   };
 
-  if (isLoading) {
-    return <div>데이터 로딩중입니다...</div>;
-  }
+  // 일기 삭제 기능
+  const onDelete = (id: number) => {
+    dispatch({ type: "DELETE", id });
+  };
 
   return (
     <div className="App">
       <DiaryStateContext.Provider value={data}>
-        <DiaryDispatchContext.Provider
-          value={{
-            onCreate,
-            onUpdate,
-            onDelete,
-          }}
-        >
+        <DiaryDispatchContext.Provider value={{ onCreate, onUpdate, onDelete }}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/new" element={<New />} />

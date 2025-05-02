@@ -4,5 +4,3 @@ export interface Diary {
   emotionId: number;
   content: string;
 }
-
-export type noIdDiary = Omit<Diary, "id">;
