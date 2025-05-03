@@ -21,9 +21,9 @@ const DiaryList = ({ diaries }: Props) => {
   const getSortedData = () => {
     return diaries.toSorted((a, b) => {
       if (sortType === "letest") {
-        return Number(a.createdDate) - Number(b.createdDate);
-      } else {
         return Number(b.createdDate) - Number(a.createdDate);
+      } else {
+        return Number(a.createdDate) - Number(b.createdDate);
       }
     });
   };
