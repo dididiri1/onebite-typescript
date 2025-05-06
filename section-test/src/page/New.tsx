@@ -1,17 +1,18 @@
-import { useContext } from "react";
+import { useDispatch } from "react-redux";
 import Button from "../components/Button";
 import Editor from "../components/Editor";
 import Header from "../components/Header";
 import { noIdDiary } from "../types";
-import { DiaryDispatchContext } from "../App";
 import { useNavigate } from "react-router-dom";
+import { createDiaryThunk } from "../features/diary/diarySlice";
+import { AppDispatch } from "../store";
 
 const New = () => {
-  const dispatch = useContext(DiaryDispatchContext);
+  const dispatch = useDispatch<AppDispatch>();
   const nav = useNavigate();
 
   const onSubmit = (input: noIdDiary) => {
-    dispatch?.onCreate(input.createdDate, input.emotionId, input.content);
+    dispatch(createDiaryThunk(input));
     nav("/");
   };
 
