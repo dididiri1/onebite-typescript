@@ -25,12 +25,9 @@ const Edit = () => {
 
     if (!currentDiaryItem) {
       window.alert("존재하지 않는 일기입니다.");
-      nav("/");
-      return;
     }
-
     setCurDiaryItem(currentDiaryItem);
-  }, [params.id]);
+  }, [params.id, nav, diaries, isLoading]);
 
   const onClickDelete = () => {
     if (window.confirm("일기를 정말 삭제할까요? 다시 복구되지 않아요!")) {
@@ -41,12 +38,7 @@ const Edit = () => {
 
   const onSubmit = (input: noIdDiary) => {
     if (window.confirm("일기를 수정하겠습니까?")) {
-      dispatch(
-        updateDiary({
-          id: Number(params.id),
-          ...input,
-        })
-      );
+      dispatch(updateDiary({ id: Number(params.id), ...input }));
       nav("/", { replace: true });
     }
   };

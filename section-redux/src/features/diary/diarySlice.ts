@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Diary } from "../../types";
+import { Diary, noIdDiary } from "../../types";
 
 interface DiaryState {
   diaries: Diary[];
@@ -21,7 +21,7 @@ const diarySlice = createSlice({
 
       localStorage.setItem("diary", JSON.stringify(state.diaries));
     },
-    createDiary(state, action: PayloadAction<Omit<Diary, "id">>) {
+    createDiary(state, action: PayloadAction<noIdDiary>) {
       const newId =
         state.diaries.length > 0
           ? Math.max(...state.diaries.map((item) => item.id)) + 1
@@ -33,7 +33,7 @@ const diarySlice = createSlice({
     },
     updateDiary(state, action: PayloadAction<Diary>) {
       state.diaries = state.diaries.map((item) =>
-        String(item.id) === String(action.payload.id) ? action.payload : item
+        item.id === action.payload.id ? action.payload : item
       );
       localStorage.setItem("diary", JSON.stringify(state.diaries));
     },
@@ -45,8 +45,3 @@ const diarySlice = createSlice({
     },
   },
 });
-
-export const { listDiary, createDiary, updateDiary, deleteDiary } =
-  diarySlice.actions;
-
-export default diarySlice.reducer;

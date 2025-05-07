@@ -4,11 +4,11 @@ import Home from "./page/Home";
 import Detail from "./page/Detail";
 import New from "./page/New";
 import Edit from "./page/Edit";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "./store";
-import { useEffect } from "react";
-import { listDiary } from "./features/diary/diarySlice";
 import { Diary } from "./types";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "./store";
+import { useEffect } from "react";
+import { listDary } from "./features/diary/diarySlice";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,8 +16,9 @@ function App() {
   useEffect(() => {
     const stored = localStorage.getItem("diary");
     const data: Diary[] = stored ? JSON.parse(stored) : [];
+
     if (Array.isArray(data)) {
-      dispatch(listDiary(data));
+      dispatch(listDary(data));
     }
   }, [dispatch]);
 
