@@ -19,7 +19,6 @@ const getMonthlyData = (pivotDate: Date, data: Diary[]) => {
 const Home = () => {
   const [pivotDate, setPivotDate] = useState(new Date());
 
-  // ✅ Redux에서 diaries 가져오기
   const { diaries, isLoading, error } = useSelector(
     (state: RootState) => state.diary
   );
@@ -36,7 +35,7 @@ const Home = () => {
   if (isLoading) return <div>로딩중...</div>;
   if (error) return <div>{error}</div>;
 
-  return (  
+  return (
     <div>
       <Header
         title={`${pivotDate.getFullYear()}년 ${pivotDate.getMonth() + 1}월`}

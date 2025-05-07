@@ -22,7 +22,7 @@ const Edit = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchDiaryThunk(Number(id))); // id로 일기 가져오기
+      dispatch(fetchDiaryThunk(Number(id)));
     }
   }, [dispatch, id]);
 
