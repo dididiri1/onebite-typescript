@@ -35,6 +35,13 @@ const diarySlice = createSlice({
       state.diaries = state.diaries.map((item) =>
         item.id === action.payload.id ? action.payload : item
       );
+
+      // const index = state.diaries.findIndex(
+      //   (item) => item.id === action.payload.id
+      // );
+      // if (index !== -1) {
+      //   state.diaries[index] = action.payload;
+      // }
       localStorage.setItem("diary", JSON.stringify(state.diaries));
     },
     deleteDiary(state, action: PayloadAction<Number>) {
