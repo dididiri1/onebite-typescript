@@ -4,7 +4,12 @@ import Header from "../components/Header";
 import Editor from "../components/Editor";
 import { Diary, noIdDiary } from "../types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchDiary, updateDiary } from "../api/diaryApi";
+import {
+  createDiary,
+  deletediary,
+  fetchDiary,
+  updateDiary,
+} from "../api/diaryApi";
 
 const Edit = () => {
   const params = useParams();
@@ -19,15 +24,15 @@ const Edit = () => {
 
   const { data, isLoading, error } = useQuery<Diary>({
     queryKey: ["diary", params.id],
-    queryFn: async () => {
-      const res = await fetchDiary(Number(params.id));
+    queryFn: async ({ queryKey }) => {
+      const [, id] = queryKey;
+      const res = await fetchDiary(Number(id));
       return res.data.data;
     },
-    //initialData: cached,
     staleTime: 1000 * 60 * 5,
   });
 
-  const updateMutation = useMutation({
+  const createMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: noIdDiary }) =>
       updateDiary(id, data),
     onSuccess: () => {
@@ -35,17 +40,32 @@ const Edit = () => {
       nav("/", { replace: true });
     },
     onError: (error) => {
-      console.error("수정 실패:", error);
+      console.log("일기 등록 실패:", error);
     },
   });
 
   const onSubmit = (input: noIdDiary) => {
-    if (window.confirm("일기를 수정하겠습니까?")) {
-      updateMutation.mutate({ id: Number(params.id), data: input });
+    if (window.confirm("일기를 수정 하겠습니까?")) {
+      createMutation.mutate({ id: Number(params.id), data: input });
     }
   };
 
-  const onClickDelete = () => {};
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deletediary(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["diaries"] });
+      nav("/", { replace: true });
+    },
+    onError: (error) => {
+      console.log("일기 삭제 실패:", error);
+    },
+  });
+
+  const onClickDelete = () => {
+    if (window.confirm("일기를 삭제 하겠습니까?")) {
+      deleteMutation.mutate(Number(params.id));
+    }
+  };
 
   if (isLoading) return <div>로딩중...</div>;
   if (error) return <div>에러 발생</div>;

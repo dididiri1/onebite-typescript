@@ -1,7 +1,7 @@
 import Header from "../components/Header";
 import Button from "../components/Button";
 import DiaryList from "../components/DiaryList";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Diary } from "../types";
 import { useQuery } from "@tanstack/react-query";
 import { fetchDiaries } from "../api/diaryApi";
@@ -35,10 +35,8 @@ const Home = () => {
     queryKey: ["diaries"],
     queryFn: async () => {
       const res = await fetchDiaries();
-      console.log(res.data.data);
       return res.data.data;
     },
-    staleTime: 1000 * 60 * 5,
   });
 
   const [pivotDate, setPivotDate] = useState(new Date());

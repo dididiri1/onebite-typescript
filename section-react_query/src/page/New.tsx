@@ -14,7 +14,7 @@ const New = () => {
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
+  const createMutation = useMutation({
     mutationFn: (data: noIdDiary) => createDiary(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["diaries"] });
@@ -26,7 +26,7 @@ const New = () => {
   });
 
   const onSubmit = (input: noIdDiary) => {
-    mutation.mutate(input);
+    createMutation.mutate(input);
   };
 
   return (
